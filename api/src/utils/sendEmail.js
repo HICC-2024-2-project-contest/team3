@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 
 const smtpSettings = {
     'gmail.com': { host: 'smtp.gmail.com', port: 587, secure: false }
-    // Add email domain and settings here
+    // Add email domain
 };
 
 async function sendMail({ email, password, toEmail, subject, htmlContent}) {

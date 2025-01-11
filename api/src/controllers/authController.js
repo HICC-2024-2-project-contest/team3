@@ -1,9 +1,8 @@
+require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql");
 const redis = require("redis");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const { uploadProfileImage } = require("../utils/image");
 const { mysqlConfig, redisConfig, mongoConfig } = require("../config/database");
 
 const mysqlConnection = mysql.createConnection(mysqlConfig);
@@ -44,7 +43,7 @@ exports.verifyEmail = async (req, res) => {
     const token = req.params.token;
 
     try {
-        // Verify JWt
+        // Verify JWT
         const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
         if (!verifiedToken) {
             return res.status(401).json({ error: "Invalid token" });

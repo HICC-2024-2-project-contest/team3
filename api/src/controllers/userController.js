@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql");
 const redis = require("redis");
@@ -5,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const {v4: uuidv4} = require("uuid");
-const { uploadProfileImage } = require("../utils/image");
+const { uploadProfileImage, deleteProfileImage } = require("../utils/image");
 const { mysqlConfig, redisConfig, mongoConfig } = require("../config/database");
 
 const mysqlConnection = mysql.createConnection(mysqlConfig);
@@ -131,7 +132,7 @@ exports.getUser = async (req, res) => {
     try {
         // Get user information
         const [results] = await mysqlConnection.promise().query(
-            "SELECT * FROM users WHERE id = ?",
+            "SELECT * FROM USER WHERE id = ?",
             [userId],
         );
         if (results.length === 0) {
@@ -140,6 +141,71 @@ exports.getUser = async (req, res) => {
 
         const user = results[0];
         return res.status(200).json({ user: user });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.getFollowers = async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        // Get followers
+        const [results] = await mysqlConnection.promise().query(
+            "SELECT * FROM FOLLOW WHERE userId = ?",
+            [userId],
+        );
+        if (results.length === 0) {
+            return res.status(401).json({ error: "Invalid user" });
+        }
+
+        return res.status(200).json({ followers: results });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+};
+
+exports.getReports = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    try {
+        // Get reports
+        const [results] = await mysqlConnection.promise().query(
+            "SELECT * FROM REPORT WHERE userId = ?",
+            [userId],
+        );
+        if (results.length === 0) {
+            return res.status(401).json({ error: "Invalid user" });
+        }
+
+        return res.status(200).json({ reports: results });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.getBlocks = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    try {
+        // Get blocks
+        const [results] = await mysqlConnection.promise().query(
+            "SELECT * FROM BLOCK WHERE userId = ?",
+            [userId],
+        );
+        if (results.length === 0) {
+            return res.status(401).json({ error: "Invalid user" });
+        }
+
+        return res.status(200).json({ blocks: results });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
@@ -158,7 +224,7 @@ exports.putUser = async (req, res) => {
     try {
         // Update user information
         await mysqlConnection.promise().query(
-            "UPDATE users SET username = ?, description = ? WHERE userId = ?",
+            "UPDATE USER SET username = ?, description = ? WHERE userId = ?",
             [username, description, userId],
         );
 
@@ -178,7 +244,7 @@ exports.deleteUser = async (req, res) => {
     try {
         // Delete user
         await mysqlConnection.promise().query(
-            "DELETE FROM users WHERE id = ?",
+            "DELETE FROM USER WHERE id = ?",
             [userId],
         );
         await redisClient.del(userId.toString() + "-refreshToken");
@@ -198,9 +264,229 @@ exports.uploadProfileImage = async (req, res) => {
 
     try {
         const { image } = req.body;
-        await uploadProfileImage(image);
+        await uploadProfileImage(userId, image);
+        await mysqlConnection.promise().query(
+            "UPDATE USER SET profileImage = ? WHERE userId = ?",
+            [image, userId],
+        );
 
         return res.status(200).json({ message: "Profile image uploaded successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.deleteProfileImage = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+        await deleteProfileImage(userId);
+        await mysqlConnection.promise().query(
+            "UPDATE USER SET profileImage = NULL WHERE userId = ?",
+            [userId],
+        );
+        return res.status(200).json({ message: "Profile image deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.follow = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { targetUserId } = req.body;
+
+    try {
+        // Check if the target user exists
+        const [targetUser] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM USER WHERE id = ?",
+            [targetUserId],
+        );
+        if (targetUser.length === 0) {
+            return res.status(404).json({ error: "Target user not found" });
+        }
+
+        // Check if the user is already following the target user
+        const [existingFollow] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM FOLLOW WHERE followerId = ? AND followingId = ?",
+            [userId, targetUserId],
+        );
+        if (existingFollow.length > 0) {
+            return res.status(409).json({ error: "Already following" });
+        }
+
+        // Follow
+        await mysqlConnection.promise().query(
+            "INSERT INTO FOLLOW (followerId, followingId) VALUES (?, ?)",
+            [userId, targetUserId],
+        );
+
+        return res.status(200).json({ message: "Followed successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.unfollow = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { targetUserId } = req.body;
+
+    try {
+        // Check if the target user exists
+        const [targetUser] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM USER WHERE id = ?",
+            [targetUserId],
+        );
+        if (targetUser.length === 0) {
+            return res.status(404).json({ error: "Target user not found" });
+        }
+
+        // Check if the user is following the target user
+        const [existingFollow] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM FOLLOW WHERE followerId = ? AND followingId = ?",
+            [userId, targetUserId],
+        );
+        if (existingFollow.length === 0) {
+            return res.status(409).json({ error: "Not following" });
+        }
+
+        // Unfollow
+        await mysqlConnection.promise().query(
+            "DELETE FROM FOLLOW WHERE followerId = ? AND followingId = ?",
+            [userId, targetUserId],
+        );
+
+        return res.status(200).json({ message: "Unfollowed successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.report = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { targetUserId, reason } = req.body;
+
+    try {
+        // Check if the target user exists
+        const [targetUser] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM USER WHERE id = ?",
+            [targetUserId],
+        );
+        if (targetUser.length === 0) {
+            return res.status(404).json({ error: "Target user not found" });
+        }
+
+        // Report
+        await mysqlConnection.promise().query(
+            "INSERT INTO REPORT (userId, targetUserId, reason) VALUES (?, ?, ?)",
+            [userId, targetUserId, reason],
+        );
+
+        return res.status(200).json({ message: "Reported successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.block = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { targetUserId } = req.body;
+
+    try {
+        // Check if the target user exists
+        const [targetUser] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM USER WHERE id = ?",
+            [targetUserId],
+        );
+        if (targetUser.length === 0) {
+            return res.status(404).json({ error: "Target user not found" });
+        }
+
+        // Check if the user is already blocking the target user
+        const [existingBlock] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM BLOCK WHERE userId = ? AND targetUserId = ?",
+            [userId, targetUserId],
+        );
+        if (existingBlock.length > 0) {
+            return res.status(409).json({ error: "Already blocking" });
+        }
+
+        // Block
+        await mysqlConnection.promise().query(
+            "INSERT INTO BLOCK (userId, targetUserId) VALUES (?, ?)",
+            [userId, targetUserId],
+        );
+
+        return res.status(200).json({ message: "Blocked successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.unblock = async (req, res) => {
+    const userId = req.params.userId;
+    const accessToken = jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET);
+    if (accessToken.userId !== userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { targetUserId } = req.body;
+
+    try {
+        // Check if the target user exists
+        const [targetUser] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM USER WHERE id = ?",
+            [targetUserId],
+        );
+        if (targetUser.length === 0) {
+            return res.status(404).json({ error: "Target user not found" });
+        }
+
+        // Check if the user is blocking the target user
+        const [existingBlock] = await mysqlConnection.promise().query(
+            "SELECT 1 FROM BLOCK WHERE userId = ? AND targetUserId = ?",
+            [userId, targetUserId],
+        );
+        if (existingBlock.length === 0) {
+            return res.status(409).json({ error: "Not blocking" });
+        }
+
+        // Unblock
+        await mysqlConnection.promise().query(
+            "DELETE FROM BLOCK WHERE userId = ? AND targetUserId = ?",
+            [userId, targetUserId],
+        );
+
+        return res.status(200).json({ message: "Unblocked successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });

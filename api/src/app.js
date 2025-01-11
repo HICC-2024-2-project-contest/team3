@@ -1,12 +1,12 @@
 const express = require("express");
-const userRoutes = require("./routes/userRoutes");
+const userRoutes = require("./router/userRouter");
+const authRoutes = require("./router/authRouter");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
-
-app.use()
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("TRPG BACKEND SAMPLE");
