@@ -5,6 +5,6 @@ const connection = mysql.createConnection(mysqlConfig);
 
 // MySQL init
 const mysqlInit = "../database/mysqlinit.sql";
-const mysql = fs.readFileSync(filePath, 'utf8');
-const result = await connection.query(mysql);
+const mysql = fs.readFileSync(mysqlInit, 'utf8');
+await connection.query(mysql);
 await connection.end();

@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
     try {
         // Verify that email is not duplicated.
         const [results] = await mysqlConnection.promise().query(
-            "SELECT 1 FROM users WHERE email = ?",
+            "SELECT 1 FROM USER WHERE email = ?",
             [email],
         );
         if (results.length > 0) {
@@ -34,12 +34,10 @@ exports.register = async (req, res) => {
         await redisClient.del(`isEmailVerified-${email}`)
 
         // Insert account data  
-        const timestamp = Date.now().toString();
-        const uuid = uuidv4();
-        const userId = crypto.createHash("sha256").update(email + timestamp + uuid).digest("hex");
+        const userId = uuidv4();
         const hashedPassword = bcrypt.hash(password, 10);
         await mysqlConnection.promise().query(
-            "INSERT INTO users (userId, email, password, username, description) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO USER (userId, email, password, username, description) VALUES (?, ?, ?, ?, ?)",
             [userId, email, hashedPassword, username, description],
         );
 
@@ -56,7 +54,7 @@ exports.login = async (req, res) => {
     try {
         // Verify that email exists.
         const [results] = await mysqlConnection.promise().query(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT * FROM USER WHERE email = ?",
             [email],
         );
         if (results.length === 0) {
@@ -139,8 +137,7 @@ exports.getUser = async (req, res) => {
             return res.status(401).json({ error: "Invalid user" });
         }
 
-        const user = results[0];
-        return res.status(200).json({ user: user });
+        return res.status(200).json({ user: results });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });

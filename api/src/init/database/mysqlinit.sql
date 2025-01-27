@@ -16,7 +16,7 @@ CREATE TABLE FOLLOW (
     followerId VARCHAR(64) NOT NULL,
     followingId VARCHAR(64) NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT follows_pk PRIMARY KEY (followerId, followingId),
+    CONSTRAINT followsPk PRIMARY KEY (followerId, followingId),
     FOREIGN KEY (followerId) REFERENCES USER(userId),
     FOREIGN KEY (followingId) REFERENCES USER(userId)
 );
@@ -35,7 +35,7 @@ CREATE TABLE BLOCK (
     userId VARCHAR(64) NOT NULL,
     targetUserId VARCHAR(64) NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT blocks_pk PRIMARY KEY (userId, targetUserId),
+    CONSTRAINT blocksPk PRIMARY KEY (userId, targetUserId),
     FOREIGN KEY (userId) REFERENCES USER(userId),
     FOREIGN KEY (targetUserId) REFERENCES USER(userId)
 );

@@ -15,7 +15,7 @@ exports.requestEmailVerification = async (req, res) => {
     try {
         // Verify that email is not exist.
         const [results] = await mysqlConnection.promise().query(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT * FROM USER WHERE email = ?",
             [email],
         );
         if (results.length !== 0) {
@@ -51,7 +51,7 @@ exports.verifyEmail = async (req, res) => {
         const { email } = verifiedToken;
         // Verfiy that account is exist
         const [results] = await mysqlConnection.promise().query(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT * FROM USER WHERE email = ?",
             [email],
         );
         if (results.length !== 0) {
