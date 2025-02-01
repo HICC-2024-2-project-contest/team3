@@ -1,16 +1,17 @@
 {
-    "name": "trpg-api",
-    "version": "0.1.0",
-    "description": "TRPG platform RESTful API Server",
-    "main": "app.js",
-    "scripts": {
-        "start": "node app.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "Tafka-4",
-    "license": "MIT",
-    "dependencies": {
-        "express": "^4.21.2"
-    }
+  "name": "trpg-api",
+  "version": "0.1.0",
+  "description": "TRPG platform RESTful API Server",
+  "main": "src/app.mjs",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Tafka-4",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "node-html-parser": "^7.0.1"
+  }
 }
