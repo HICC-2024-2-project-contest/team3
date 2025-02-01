@@ -63,7 +63,9 @@ class TemplateEngine {
   }
 
   processDocument(file, document, scope = {}) {
+    this.processRepeatTag(file, document, scope);
     this.processInjection(file, document, scope);
+    this.processIfTag(file, document, scope);
     this.processImportTag(file, document, scope);
     this.processUri(file, document, scope);
   }
@@ -90,6 +92,73 @@ class TemplateEngine {
       const importDocument = HTML.parse(this.getTemplate(importFile));
       this.processDocument(importFile, importDocument, scope);
       element.replaceWith(...importDocument.childNodes);
+    }
+  }
+
+  processIfTag(file, document, scope = {}) {
+    const elements = document.querySelectorAll('if');
+
+    for (const element of elements) {
+      let conditions = [element];
+      let sibling = element;
+      while (true) {
+        sibling = sibling.nextElementSibling;
+        if (!sibling) {
+          break;
+        } else if (sibling.tagName === 'ELIF') {
+          conditions.push(sibling);
+        } else if (sibling.tagName === 'ELSE') {
+          conditions.push(sibling);
+          break;
+        } else {
+          break;
+        }
+      }
+
+      let checked = false;
+      for (const condition of conditions) {
+        if (checked) {
+          condition.remove();
+        } else if (condition.tagName === 'IF' || condition.tagName === 'ELIF') {
+          let code = condition.getAttribute('condition');
+          if (this.eval(code, scope)) {
+            condition.replaceWith(...condition.childNodes);
+            checked = true;
+          } else {
+            condition.remove();
+          }
+        } else {
+          condition.replaceWith(...condition.childNodes);
+          checked = true;
+        }
+      }
+    }
+  }
+
+  processRepeatTag(file, document, scope = {}) {
+    let elements = document.querySelectorAll('repeat');
+
+    for (const element of elements) {
+      let times = this.eval(element.getAttribute('times'), scope);
+      let from = this.eval(element.getAttribute('from'), scope);
+      let to = this.eval(element.getAttribute('to'), scope);
+      if (times) {
+        from = 0;
+        to = times - 1;
+      }
+
+      let content = element.innerHTML;
+      let indexKey = element.getAttribute('index');
+      let repeatedContent = '';
+      for (let i = from; i <= to; i++) {
+        if (indexKey) {
+          scope[indexKey] = i;
+        }
+        const contentDocument = parse(content);
+        this.processDocument(contentDocument, scope);
+        repeatedContent += contentDocument.toString();
+      }
+      element.innerHTML = repeatedContent;
     }
   }
 

@@ -1,0 +1,105 @@
+:root {
+  --button-bg: rgb(230, 230, 230);
+  --button-fg: rgb(80, 80, 80);
+  --button-ol: rgb(210, 210, 210);
+  --button-hover-bg: rgb(60, 60, 60);
+  --button-hover-fg: white;
+  --button-hover-ol: rgb(80, 80, 80);
+  --button-disabled-bg: rgb(128, 128, 128);
+  --button-disabled-fg: white;
+  --button-disabled-ol: rgb(180, 180, 180);
+}
+
+button,
+[type='button'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  border: none;
+  border-radius: 0.625rem;
+  height: 2.25rem;
+  padding: 0 1rem;
+  cursor: pointer;
+  font-family: var(--sans-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  border: solid 1px var(--button-ol);
+}
+button:hover,
+[type='button']:hover {
+  background: var(--button-hover-bg);
+  color: var(--button-hover-fg);
+  border-color: var(--button-hover-ol);
+}
+
+button:disabled,
+button[disabled],
+[type='button']:disabled,
+[type='button'][disabled] {
+  background: var(--button-disabled-bg);
+  color: var(--button-disabled-fg);
+  border-color: var(--button-disabled-ol);
+  cursor: not-allowed;
+}
+button:focus-visible,
+[type='button']:focus-visible {
+  outline: solid 0.25rem var(--th);
+  outline-offset: 0.25rem;
+}
+
+/* 다른 스타일의 버튼 */
+
+button[small],
+[type='button'][small] {
+  height: 2rem;
+  border-radius: 0.625rem;
+  font-size: 0.8rem;
+  padding: 0 0.75rem;
+  gap: 0.25rem;
+}
+button[shadow],
+[type='button'][shadow] {
+  box-shadow: var(--button-shadow);
+}
+
+/* 다른 타입의 버튼 */
+
+button[primary],
+[type='button'][primary] {
+  --button-bg: rgb(255, 100, 60);
+  --button-ol: rgb(255, 51, 0);
+  --button-hover-bg: rgb(255, 80, 37);
+  --button-hover-fg: white;
+  --button-hover-ol: rgb(255, 51, 0);
+  --button-disabled-bg: rgb(150, 87, 72);
+  --button-disabled-fg: white;
+  --button-disabled-ol: rgb(111, 65, 54);
+}
+button[second],
+[type='button'][second] {
+  --button-bg: white;
+  --button-fg: black;
+  --button-ol: rgb(210, 210, 210);
+  --button-hover-bg: rgb(240, 240, 240);
+  --button-hover-fg: black;
+  --button-hover-ol: rgb(210, 210, 210);
+}
+
+/* 저장하기 */
+.save-btn {
+  background-color: #ff643c;
+  width: 160px; /* 1.5rem */
+  height: 48px; /* 0.5rem */
+  border-radius: 10px 0 0 10px;
+  font-size: 20px; /* 0.2rem */
+  cursor: pointer;
+  position: absolute;
+  right: 0px; /* 오른쪽 아래에 고정 */
+  bottom: 100px; /* 아래쪽 하단에 고정 */
+}
