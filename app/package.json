@@ -1,11 +1,11 @@
 {
   "name": "trpg-api",
   "version": "0.1.0",
-  "description": "TRPG platform RESTful API Server",
+  "description": "프론트",
   "main": "src/app.mjs",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js -p 80",
+    "dev": "nodemon src/app.js -p 80"
   },
   "keywords": [],
   "author": "Tafka-4",
@@ -13,5 +13,14 @@
   "dependencies": {
     "express": "^4.21.2",
     "node-html-parser": "^7.0.1"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "*"
+    ],
+    "ignore": [
+      "./src/public"
+    ],
+    "ext": "js,mjs,json,html,css"
   }
 }
