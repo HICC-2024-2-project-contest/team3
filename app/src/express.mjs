@@ -24,6 +24,7 @@ app.use(express.json({ limit: 104857600 }));
 import middlewares from './modules/middlewares/index.mjs';
 app.use(middlewares.cookies());
 app.use(middlewares.headers(config.headers));
+app.use(middlewares.client());
 
 /* 템플릿 엔진 설정 */
 import TemplateEngine from './modules/engine.mjs';

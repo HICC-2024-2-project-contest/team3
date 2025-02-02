@@ -84,11 +84,16 @@ class TemplateEngine {
   processImportTag(file, document, scope = {}) {
     let elements = document.querySelectorAll('import');
     for (const element of elements) {
-      const src = element.getAttribute('src');
-      const importFile = path.resolve(
-        src.startsWith('/') ? scope.settings.view : path.dirname(file),
-        element.getAttribute('src')
-      );
+      let src = element.getAttribute('src');
+      if (!src.endsWith('.html')) {
+        src += '.html';
+      }
+      let dir = path.dirname(file);
+      if (src.startsWith('/')) {
+        dir = this.views;
+        src = src.substring(1);
+      }
+      const importFile = path.resolve(dir, src);
       const importDocument = HTML.parse(this.getTemplate(importFile));
       this.processDocument(importFile, importDocument, scope);
       element.replaceWith(...importDocument.childNodes);

@@ -1,0 +1,11 @@
+GeoIP data from geoip-lite using MaxMind's GeoLite2 database
+
+cd node_modules/geoip-lite
+npm run-script updatedb license_key=[KEY]
+
+
+
+ASN data from https://thyme.apnic.net/current
+
+IPv4-ASN.json: https://thyme.apnic.net/current/data-raw-table
+ASN-name.json: https://thyme.apnic.net/current/data-used-autnums

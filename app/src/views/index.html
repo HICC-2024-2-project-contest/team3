@@ -1,53 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="/modules/injections.mjs" type="module"></script>
-
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
-    />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="theme-color" content="#ff643c" />
-
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-    <link href="/resources/master.css" rel="stylesheet" />
-    <link href="/resources/button.css" rel="stylesheet" />
-    <script src="/resources/master.mjs" type="module"></script>
-    <script src="/components/master.mjs" type="module"></script>
-
-    <link href="index.css" rel="stylesheet" />
-
-    <title>#{title}</title>
+    <import src="/head"></import>
   </head>
+
   <body>
-    <nav id="nav">
-      <div class="wrapper">
-        <div class="left">
-          <div class="menu"></div>
-          <div class="title"></div>
-        </div>
-        <div class="right">
-          <div class="search"><input</div>
-          <div class="login">
-            <button>로그인</button>
-            <button>회원가입</button>
-          </div>
-          <div class="account"></div>
-        </div>
-      </div>
-    </nav>
+    <if condition="parts?.includes('nav')">
+      <import src="/nav"></import>
+    </if>
+    <else>
+      <import src="/logo"></import>
+    </else>
 
-    <section id="nav-menu"></section>
+    <main>
+      <import src="/#{page}"></import>
+    </main>
 
-    <main></main>
-
-    <footer id="footer">
-      <div class="wrapper"></div>
-    </footer>
+    <if condition="parts?.includes('footer')">
+      <import src="/footer"></import>
+    </if>
   </body>
 </html>

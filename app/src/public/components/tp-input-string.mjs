@@ -23,12 +23,12 @@ export default customElements.define(
           font-size: 1rem;
           font-weight: 400;
           width: 100%;
-          height: 2.5rem;
+          height: 2.25rem;
           padding: 0rem 0.75rem;
           outline: none;
-          border: solid 0.1rem rgb(210, 210, 210);
-          border-radius: 0.75rem;
-          background: rgb(240,240,240);
+          border: solid 1px rgb(210, 210, 210);
+          border-radius: 0.625rem;
+          background: rgb(240, 240, 240);
         }
         :host > input:focus {
           border-color: rgb(80, 80, 80);
@@ -52,7 +52,8 @@ export default customElements.define(
         :host > label {
           line-height: 1.25rem;
           font-size: 0.8rem;
-          font-weight: 600;
+          font-weight: 500;
+          color: rgb(80, 80, 80);
         }
         :host > .message {
           line-height: 1rem;
@@ -68,9 +69,9 @@ export default customElements.define(
       shadow.appendChild(style);
 
       const input = document.createElement('input');
-      input.type = this.getAttribute('type');
-      input.value = this.getAttribute('value');
-      input.placeholder = this.getAttribute('placeholder');
+      input.type = this.getAttribute('type') || 'text';
+      input.value = this.getAttribute('value') || '';
+      input.placeholder = this.getAttribute('placeholder') || '';
       input.disabled = this.hasAttribute('disabled');
       input.readOnly = this.hasAttribute('readOnly');
       input.spellcheck = false;
@@ -81,6 +82,9 @@ export default customElements.define(
       const message = document.createElement('div');
       message.classList.add('message');
       message.innerHTML = this.getAttribute('message');
+      if (this.hasAttribute('nomessage')) {
+        message.style.display = 'none';
+      }
 
       shadow.appendChild(label);
       shadow.appendChild(input);
@@ -141,7 +145,9 @@ export default customElements.define(
       } else {
         this.removeAttribute('placeholder');
       }
-      this.shadowRoot.querySelector('input').placeholder = newValue || '';
+      this.shadowRoot
+        ? (this.shadowRoot.querySelector('input').placeholder = newValue || '')
+        : null;
     }
 
     get disabled() {

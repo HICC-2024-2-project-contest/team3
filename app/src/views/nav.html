@@ -1,0 +1,77 @@
+<link href="nav.css" rel="stylesheet" />
+<script src="nav.mjs" type="module"></script>
+
+<section id="nav-margin"></section>
+
+<nav id="nav">
+  <div class="left">
+    <div class="menu" type="button" id="nav-button-menu-open">
+      <div class="bar b1"></div>
+      <div class="bar b2"></div>
+      <div class="bar b3"></div>
+    </div>
+    <a href="/" class="logo">
+      <img src="/resources/logo.svg" />
+    </a>
+  </div>
+  <div class="right">
+    <div class="search">
+      <tp-input-string
+        placeholder="검색"
+        nomessage
+        type="search"
+      ></tp-input-string>
+    </div>
+    <div class="account">
+      <div class="profile" id="nav-button-account-open">
+        <img id="nav-profile-image" />
+      </div>
+    </div>
+    <div class="login">
+      <vr></vr>
+      <a href="/a/login" type="button" second id="nav-button-login">로그인</a>
+      <a href="/a/register" type="button">회원가입</a>
+    </div>
+  </div>
+</nav>
+
+<section id="nav-cover" status="close"></section>
+
+<section id="nav-menu" class="navmenu" status="close">
+  <div class="title">
+    <div class="text"></div>
+    <div class="close" type="button" id="nav-button-menu-close">
+      <div class="bar b1"></div>
+      <div class="bar b2"></div>
+    </div>
+  </div>
+  <div class="content"></div>
+</section>
+
+<section id="nav-account" class="navmenu" status="close">
+  <div class="title">
+    <div class="profile">
+      <div class="image">
+        <img id="nav-account-profile-image" />
+      </div>
+      <div class="info">
+        <div class="main" id="nav-account-profile-main"></div>
+        <div class="sub" id="nav-account-profile-sub"></div>
+      </div>
+    </div>
+    <div class="close" type="button" id="nav-button-account-close">
+      <div class="bar b1"></div>
+      <div class="bar b2"></div>
+    </div>
+  </div>
+  <div class="content">
+    <a href="/p/" type="button" second id="nav-button-my-profile">내 프로필</a>
+    <a href="/p//games" type="button" second id="nav-button-my-games"
+      >내 게임</a
+    >
+    <hr />
+    <a href="/a/profile" type="button" second>계정 관리</a>
+    <hr />
+    <button second id="nav-button-logout">로그아웃</button>
+  </div>
+</section>
