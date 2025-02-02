@@ -1,3 +1,5 @@
+<img src="/docs/poster.png">
+
 # 우당탕탕 TRPG 대작전!
 
 ## 📝 개요 (Overview)
