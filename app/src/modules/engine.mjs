@@ -200,6 +200,7 @@ class TemplateEngine {
   eval(code, scope) {
     return new Function(`with (this) { return ${code} }`).call(scope);
   }
+
   nodes(string) {
     return HTML.parse(string).childNodes;
   }
