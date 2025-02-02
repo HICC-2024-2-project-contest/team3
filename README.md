@@ -1,4 +1,6 @@
-# 우당탕탕 TRPG 대작전!
+<img src="/docs/poster.png">
+
+# 우당탕탕 TRPG 대작전
 
 ## 📝 개요 (Overview)
 
@@ -83,4 +85,4 @@ Frontend: 조승완 (Wany) 3rd Grade
 
 ## 프로젝트 플래너
 
-<img src="https://raw.githubusercontent.com/HICC-2024-2-project-contest/team3/main/docs/calendar.png">
+<img src="/docs/calendar.png">
