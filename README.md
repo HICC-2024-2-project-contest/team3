@@ -2,7 +2,7 @@
 
 # 💥 💨우당탕탕💨 TRPG🎲 대작전 💥
 
-친구가 전혀 없어도 안심! 모두가 플레이어만 고집해도 가능! 우당탕탕 TRPG 대작전은 혼자서도, 여럿이서도 즐길 수 있는 TRPG 플랫폼입니다.
+<img src="/docs/present-card.png?update=1">
 
 ## 🖨️ 기능들 (Features)
 
@@ -83,3 +83,10 @@ Frontend: 조승완 (Wany) 3rd Grade
 ## 프로젝트 플래너
 
 <img src="/docs/calendar.png">
+
+<br>
+<br>
+<br>
+<hr>
+
+<img src="/docs/end-of-readme.png?update=2">
