@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <import src="/head"></import>
+  </head>
+
+  <body>
+    <if condition="parts?.includes('nav')">
+      <import src="/nav"></import>
+    </if>
+    <else>
+      <import src="/logo"></import>
+    </else>
+
+    <main>
+      <import src="/#{page}"></import>
+    </main>
+
+    <if condition="parts?.includes('footer')">
+      <import src="/footer"></import>
+    </if>
+  </body>
+</html>
