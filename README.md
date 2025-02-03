@@ -1,11 +1,8 @@
 <img src="/docs/poster.png">
 
-# 우당탕탕 TRPG 대작전
+# 💥 💨우당탕탕💨 TRPG🎲 대작전 💥
 
-## 📝 개요 (Overview)
-
-친구들과 TRPG(ORPG)를 즐길 수 있는 플랫폼입니다. 2024-2 HICC 프로젝트 제출물입니다.  
-A platform to play TRPG (ORPG) with friends. This is a 2024-2 HICC project submission.
+친구가 전혀 없어도 안심! 모두가 플레이어만 고집해도 가능! 우당탕탕 TRPG 대작전은 혼자서도, 여럿이서도 즐길 수 있는 TRPG 플랫폼입니다.
 
 ## 🖨️ 기능들 (Features)
 
