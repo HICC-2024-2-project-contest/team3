@@ -87,5 +87,6 @@ Frontend: 조승완 (Wany) 3rd Grade
 <br>
 <br>
 <br>
+<hr>
 
-<img src="/docs/end-of-readme.png?update=1">
+<img src="/docs/end-of-readme.png?update=2">
