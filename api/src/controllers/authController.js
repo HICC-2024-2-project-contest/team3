@@ -32,14 +32,12 @@ export const requestEmailVerification = async (req, res) => {
             return res.status(409).json({ error: "Email already exists" });
         }
 
-        const verifyToken = jwt.sign({ email }, process.env.JWT_SECRET, {
-            expiresIn: "5m",
-        });
-
+        const verifyToken = Math.round(1000000 * Math.random());
+        await redisClient.setEx(`verifyToken:${email}`, 300, verifyToken);
         await sendMail({
             toEmail: email,
             subject: "TRPG PLATFORM EMAIL VERIFICATION",
-            htmlContent: `<p>Click <a href="https://SERVER.com/api/v1/auth/verify-email/${verifyToken}">here</a> to verify your email.</p>`,
+            htmlContent: `<p>Your token: <b>${verifyToken}</b></p>`,
         });
 
         return res.status(200).json({ message: "Email sent successfully" });
@@ -50,10 +48,13 @@ export const requestEmailVerification = async (req, res) => {
 };
 
 export const verifyEmail = async (req, res) => {
-    const { token } = req.params;
+    const { token, email } = req.body;
 
     try {
-        const { email } = jwt.verify(token, process.env.JWT_SECRET);
+        const verifyToken = await redisClient.get(`verifyToken:${email}`);
+        if (verifyToken !== token) {
+            return res.status(401).json({ error: "Invalid token" });
+        }
 
         const [results] = await mysqlPool.query(
             "SELECT * FROM USER WHERE email = ?",
@@ -67,15 +68,6 @@ export const verifyEmail = async (req, res) => {
 
         return res.status(200).json({ message: "Email verified successfully" });
     } catch (error) {
-        if (
-            [
-                "TokenExpiredError",
-                "JsonWebTokenError",
-                "NotBeforeError",
-            ].includes(error.name)
-        ) {
-            return res.status(401).json({ error: "Invalid or expired token" });
-        }
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
     }
