@@ -1,109 +1,52 @@
 version: "3.9"
 
 services:
-  api:
-    build: ./api
-    container_name: api-server
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./api:/usr/src/app
-    depends_on:
-      - mysql
-      - mongodb
-      - redis
-      - kafka
-  app:
-    build: ./app
-    ports:
-      - "8000:8000"
-  mysql:
-      image: mysql:latest
-      container_name: mysql
-      environment:
-        MYSQL_ROOT_PASSWORD: ${MYSQL_PW}
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-      ports:
-        - "3306:3306"
-      volumes:
-        - mysql_data:/var/lib/mysql
+    api:
+        build: ./api
+        container_name: api-server
+        ports:
+            - "5000:5000"
+        volumes:
+            - ./api:/usr/src/app
+        depends_on:
+            - trpg-mysql
+            - mongodb
+            - redis
+    app:
+        build: ./app
+        ports:
+            - "8000:8000"
+    trpg-mysql:
+        image: mysql:latest
+        container_name: trpg-mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_PW}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
 
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
+    mongodb:
+        image: mongo:latest
+        container_name: mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodb_data:/data/db
 
-  redis:
-    image: redis:latest
-    container_name: redis
-    environment:
-      REDIS_PASSWORD: ${REDIS_PW}
-    ports:
-      - "6379:6379"
-
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: kafka
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/jaas.conf"
-    command: >
-      bash -c 'mkdir -p /etc/kafka && echo "Client {
-        org.apache.kafka.common.security.plain.PlainLoginModule required
-        username=\"${KAFKA_USERNAME}\"
-        password=\"${KAFKA_PASSWORD}\";
-      }" > /etc/kafka/jaas.conf && /opt/bitnami/scripts/kafka/run.sh'
-    ports:
-      - "9092:9092"
-    depends_on:
-      - zookeeper
-
-  zookeeper:
-    image: bitnami/zookeeper:latest
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      ZOO_ENABLE_AUTH: "true"
-      ZOO_SERVER_USERS: "${ZOOKEEPER_USER}"
-      ZOO_SERVER_PASSWORDS: "${ZOOKEEPER_PW}"
-
-  debezium:
-    image: debezium/connect:1.9
-    container_name: debezium
-    environment:
-      BOOTSTRAP_SERVERS: kafka:9092
-      GROUP_ID: debezium
-      CONFIG_STORAGE_TOPIC: debezium_config
-      OFFSET_STORAGE_TOPIC: debezium_offsets
-      STATUS_STORAGE_TOPIC: debezium_status
-    ports:
-      - "8083:8083"
-    depends_on:
-      - kafka
-
-  elk:
-    image: sebp/elk:latest
-    container_name: elk
-    ports:
-      - "5601:5601" # Kibana
-      - "9200:9200" # Elasticsearch
-      - "5044:5044" # Logstash
-    environment:
-      ELASTIC_PASSWORD: ${ELASTIC_PW}
-    volumes:
-      - elk_data:/var/lib/elasticsearch
+    redis:
+        image: redis:latest
+        container_name: redis
+        command: redis-server --requirepass ${REDIS_PW}
+        environment:
+            - REDIS_PASSWORD=${REDIS_PW}
+        ports:
+            - "6379:6379"
 
 volumes:
-  mysql_data:
-  mongodb_data:
-  elk_data:
+    mysql_data:
+    mongodb_data:

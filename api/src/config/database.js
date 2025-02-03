@@ -1,18 +1,29 @@
-require('dotenv').config();
+import "dotenv/config";
 
-mysqlConfig = {
+const mysqlConfig = {
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PW,
     database: process.env.MYSQL_DATABASE,
-    port: 3306
+    port: 3306,
+    waitForConnections: true,
 };
 
-redisConfig = {
+const redisConfig = {
     url: `redis://:${process.env.REDIS_PW}@redis:6379`,
-    legacyMode: true
+    legacyMode: false,
 };
 
-mongoConfig = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017`
+const mongoConfig = {
+    uri: `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PW}@mongodb:27017`,
+    options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    },
+};
 
-module.exports = { mysqlConfig, redisConfig, mongoConfig };
+export { mysqlConfig, redisConfig, mongoConfig };
+
+console.log("mysqlConfig:", mysqlConfig);
+console.log("redisConfig:", redisConfig);
+console.log("mongoConfig:", mongoConfig);
