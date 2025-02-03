@@ -1,7 +1,7 @@
-const baseUri = 'http://localhost';
+const baseUri = 'http://localhost:1337';
 
 async function request(method = 'GET', path = '', contentType, data = {}) {
-  const url = baseUri + '/api/' + path;
+  const url = baseUri + '/api/v1/' + path;
   const options = {
     method: method,
     mode: 'cors',
