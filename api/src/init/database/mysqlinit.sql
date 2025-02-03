@@ -5,7 +5,7 @@ CREATE TABLE USER (
     profileImage VARCHAR(255),
     email VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(64) NOT NULL,
-    madeRuleBook TEXT DEFAULT "",
+    madeRuleBook TEXT,
     eloRating INT DEFAULT 1000,
     isEmailVerified BOOLEAN NOT NULL DEFAULT FALSE,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
