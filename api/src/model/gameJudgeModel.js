@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 const gameJudgeSchema = mongoose.Schema({
     judgeId: { type: String, required: true, unique: true },
@@ -8,18 +8,19 @@ const gameJudgeSchema = mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, default: "" },
 
-    TriggerDescription: {type: String, required: true},
+    TriggerDescription: { type: String, required: true },
     executeTree: { type: Map, required: true },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
 
-gameJudgeSchema.pre('save', function (next) {
+postSchema.set("timestamps", true);
+gameJudgeSchema.pre("save", function (next) {
     if (!this.judgeId) {
         this.judgeId = uuidv4();
     }
     next();
 });
 
-module.exports = mongoose.model('GameJudge', gameJudgeSchema);
+export default mongoose.model("GameJudge", gameJudgeSchema);

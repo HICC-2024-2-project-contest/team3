@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 const gameEventSchema = mongoose.Schema({
     eventId: { type: String, required: true, unique: true },
@@ -15,11 +15,12 @@ const gameEventSchema = mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
-gameRuleSchema.pre('save', function (next) {
+postSchema.set("timestamps", true);
+gameRuleSchema.pre("save", function (next) {
     if (!this.eventId) {
         this.eventId = uuidv4();
     }
     next();
 });
 
-module.exports = mongoose.model('GameEvent', gameEventSchema);
+export default mongoose.model("GameEvent", gameEventSchema);

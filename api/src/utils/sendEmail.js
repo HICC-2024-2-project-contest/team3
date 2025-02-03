@@ -1,31 +1,38 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const smtpSettings = {
-    'gmail.com': { host: 'smtp.gmail.com', port: 587, secure: false }
+    "gmail.com": { host: "smtp.gmail.com", port: 587, secure: false },
+    "protonmail.com": { host: "smtp.protonmail.com", port: 587, secure: false },
     // Add email domain
 };
 
-async function sendMail({ email, password, toEmail, subject, htmlContent}) {
-    const emailDomain = email.split('@')[1];
-    const stmpConfig = smtpSettings[emailDomain];
-    if (!stmpConfig) {
+async function sendMail({ toEmail, subject, htmlContent }) {
+    if (!toEmail) {
+        throw new Error("Recipient email is required.");
+    }
+
+    const emailDomain = toEmail.split("@")[1];
+    const smtpConfig = smtpSettings[emailDomain];
+
+    if (!smtpConfig) {
         throw new Error(`Unsupported email domain: ${emailDomain}`);
     }
+
     const transporter = nodemailer.createTransport({
-        host: stmpConfig.host,
-        port: stmpConfig.port,
-        secure: stmpConfig.secure,
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        secure: smtpConfig.secure,
         auth: {
-            user: email,
-            pass: password
-        }
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
+        },
     });
 
     const mailOptions = {
-        from: email,
+        from: process.env.EMAIL_USER,
         to: toEmail,
         subject: subject,
-        html: htmlContent
+        html: htmlContent,
     };
 
     try {
@@ -36,4 +43,4 @@ async function sendMail({ email, password, toEmail, subject, htmlContent}) {
     }
 }
 
-module.exports = { sendMail };
+export default sendMail;
