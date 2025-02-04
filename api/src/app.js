@@ -6,7 +6,6 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: 104857600 }));
 
-app.use(express.json());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 
