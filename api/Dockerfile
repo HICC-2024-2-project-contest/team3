@@ -9,6 +9,6 @@ RUN apt-get update && apt-get install -y default-mysql-client
 RUN npm install
 
 COPY . /app/
-EXPOSE 5000
+EXPOSE 1337
 
 CMD ["./executeDBinit.sh", "trpg-mysql:3306", "--", "npm", "start"]

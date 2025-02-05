@@ -12,8 +12,10 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-  res.render('auth/register', {
-    title: '로그인',
+  res.render('index', {
+    title: '회원가입',
+    page: 'auth/register',
+    parts: [],
   });
 });
 
