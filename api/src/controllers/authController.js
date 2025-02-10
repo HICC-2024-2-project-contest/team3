@@ -32,11 +32,11 @@ export const requestEmailVerification = async (req, res) => {
             return res.status(409).json({ error: "Email already exists" });
         }
 
-        const verifyToken = Math.round(1000000 * Math.random());
+        const verifyToken = Math.round(1000000 * Math.random()).toString();
         await redisClient.setEx(`verifyToken:${email}`, 300, verifyToken);
         await sendMail({
             toEmail: email,
-            subject: "TRPG PLATFORM EMAIL VERIFICATION",
+            subject: "TRPG PLATFORM EMAIL VERIFICATION AUTHENTICATION",
             htmlContent: `<p>Your token: <b>${verifyToken}</b></p>`,
         });
 
