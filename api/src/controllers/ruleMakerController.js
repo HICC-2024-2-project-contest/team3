@@ -8,11 +8,12 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 
 import { redisConfig, mongoConfig } from "../config/database.js";
-import gameRule from "../model/gameRuleModel.js";
-import gameEvent from "../model/gameEventModel.js";
-import gameJudge from "../model/gameJudgeModel.js";
-import gameClass from "../model/gameClassModel.js";
-import gameEnding from "../model/gameEndingModel.js";
+import GameRule from "../model/gameRuleModel.js";
+import GameEvent from "../model/gameEventModel.js";
+import GameJudge from "../model/gameJudgeModel.js";
+import GameClass from "../model/gameClassModel.js";
+import GameEnding from "../model/gameEndingModel.js";
+import GameEntity from "../model/gameEntityModel.js";
 
 const redisClient = redis.createClient(redisConfig);
 (async () => {
@@ -32,7 +33,7 @@ mongoose
 export const getRule = async (req, res) => {
     try {
         const { ruleId } = req.params;
-        const rule = await gameRule.findOne({ ruleId });
+        const rule = await GameRule.findOne({ ruleId });
         if (!rule) {
             return res.status(404).json({ message: "Rule not found" });
         }
@@ -44,13 +45,15 @@ export const getRule = async (req, res) => {
     }
 };
 
-// Rule 생성
 export const createRule = async (req, res) => {
     try {
         const {
             title,
             description,
             background,
+            globalVariables,
+            customEntityConfig,
+            customItemConfig,
             additionalInformation,
             eventList,
             judgeList,
@@ -61,15 +64,18 @@ export const createRule = async (req, res) => {
             isPublished,
         } = req.body;
 
-        // 필수 필드 체크 (예: title, additionalInformation)
-        if (!title || !additionalInformation) {
+        if (!title) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
         const newRule = new GameRule({
+            ruleId: uuidv4(),
             title,
             description,
             background,
+            globalVariables,
+            customEntityConfig,
+            customItemConfig,
             additionalInformation,
             eventList,
             judgeList,
@@ -78,7 +84,6 @@ export const createRule = async (req, res) => {
             exampleScenarios,
             isPublic,
             isPublished,
-            // 작성자는 JWT 토큰의 userId 사용
             authorId: req.user.userId,
         });
         await newRule.save();
@@ -92,14 +97,12 @@ export const createRule = async (req, res) => {
     }
 };
 
-// Rule 업데이트
 export const updateRule = async (req, res) => {
     try {
         const { ruleId } = req.params;
         const rule = await GameRule.findOne({ ruleId });
         if (!rule) return res.status(404).json({ message: "Rule not found" });
 
-        // 작성자(authorId)와 요청자(userId)가 일치하는지 확인
         if (rule.authorId !== req.user.userId) {
             return res.status(403).json({ error: "Forbidden" });
         }
@@ -108,6 +111,9 @@ export const updateRule = async (req, res) => {
             title,
             description,
             background,
+            globalVariables,
+            customEntityConfig,
+            customItemConfig,
             additionalInformation,
             eventList,
             judgeList,
@@ -118,10 +124,15 @@ export const updateRule = async (req, res) => {
             isPublished,
         } = req.body;
 
-        // 전달된 필드만 업데이트
         if (title !== undefined) rule.title = title;
         if (description !== undefined) rule.description = description;
         if (background !== undefined) rule.background = background;
+        if (globalVariables !== undefined)
+            rule.globalVariables = globalVariables;
+        if (customEntityConfig !== undefined)
+            rule.customEntityConfig = customEntityConfig;
+        if (customItemConfig !== undefined)
+            rule.customItemConfig = customItemConfig;
         if (additionalInformation !== undefined)
             rule.additionalInformation = additionalInformation;
         if (eventList !== undefined) rule.eventList = eventList;
@@ -132,7 +143,6 @@ export const updateRule = async (req, res) => {
             rule.exampleScenarios = exampleScenarios;
         if (isPublic !== undefined) rule.isPublic = isPublic;
         if (isPublished !== undefined) rule.isPublished = isPublished;
-        // updatedAt은 timestamps 옵션에 의해 자동 관리되지만 직접 갱신도 가능
         rule.updatedAt = Date.now();
 
         await rule.save();
@@ -143,14 +153,12 @@ export const updateRule = async (req, res) => {
     }
 };
 
-// Rule 삭제
 export const deleteRule = async (req, res) => {
     try {
         const { ruleId } = req.params;
         const rule = await GameRule.findOne({ ruleId });
         if (!rule) return res.status(404).json({ message: "Rule not found" });
 
-        // 작성자(authorId)와 요청자(userId) 체크
         if (rule.authorId !== req.user.userId) {
             return res.status(403).json({ error: "Forbidden" });
         }
@@ -163,11 +171,6 @@ export const deleteRule = async (req, res) => {
     }
 };
 
-// ──────────────────────────────
-// Event 관련 Controller 함수
-// ──────────────────────────────
-
-// Event 조회
 export const getEvent = async (req, res) => {
     try {
         const { ruleId, eventId } = req.params;
@@ -182,18 +185,15 @@ export const getEvent = async (req, res) => {
     }
 };
 
-// Event 생성
 export const createEvent = async (req, res) => {
     try {
         const { ruleId } = req.params;
         const { title, description, triggerTree, executeTree } = req.body;
 
-        // 필수 필드 체크
         if (!title || !triggerTree || !executeTree) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
-        // 해당 Rule이 존재하는지, 그리고 요청한 사용자가 Rule 작성자인지 확인
         const rule = await GameRule.findOne({ ruleId });
         if (!rule) return res.status(404).json({ message: "Rule not found" });
         if (rule.authorId !== req.user.userId) {
@@ -218,14 +218,12 @@ export const createEvent = async (req, res) => {
     }
 };
 
-// Event 업데이트
 export const updateEvent = async (req, res) => {
     try {
         const { ruleId, eventId } = req.params;
         const event = await GameEvent.findOne({ ruleId, eventId });
         if (!event) return res.status(404).json({ message: "Event not found" });
 
-        // Event 수정 권한 체크: 해당 Rule의 작성자여야 함
         const rule = await GameRule.findOne({ ruleId });
         if (!rule || rule.authorId !== req.user.userId) {
             return res.status(403).json({ error: "Forbidden" });
@@ -246,14 +244,12 @@ export const updateEvent = async (req, res) => {
     }
 };
 
-// Event 삭제
 export const deleteEvent = async (req, res) => {
     try {
         const { ruleId, eventId } = req.params;
         const event = await GameEvent.findOne({ ruleId, eventId });
         if (!event) return res.status(404).json({ message: "Event not found" });
 
-        // 삭제 권한 체크: Rule의 작성자여야 함
         const rule = await GameRule.findOne({ ruleId });
         if (!rule || rule.authorId !== req.user.userId) {
             return res.status(403).json({ error: "Forbidden" });
@@ -261,6 +257,387 @@ export const deleteEvent = async (req, res) => {
 
         await GameEvent.deleteOne({ ruleId, eventId });
         return res.status(200).json({ message: "Event deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const getJudge = async (req, res) => {
+    try {
+        const { ruleId, judgeId } = req.params;
+        const judge = await GameJudge.findOne({ ruleId, judgeId });
+        if (!judge) {
+            return res.status(404).json({ message: "Judge not found" });
+        }
+        return res.status(200).json(judge);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const createJudge = async (req, res) => {
+    try {
+        const { ruleId } = req.params;
+        const { title, description, triggerDescription, executeTree } =
+            req.body;
+
+        if (!title || !triggerDescription || !executeTree) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule) return res.status(404).json({ message: "Rule not found" });
+        if (rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const newJudge = new GameJudge({
+            ruleId,
+            title,
+            description,
+            triggerDescription,
+            executeTree,
+        });
+        await newJudge.save();
+        return res.status(201).json({
+            message: "Judge created successfully",
+            judgeId: newJudge.judgeId,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const updateJudge = async (req, res) => {
+    try {
+        const { ruleId, judgeId } = req.params;
+        const judge = await GameJudge.findOne({ ruleId, judgeId });
+        if (!judge) return res.status(404).json({ message: "Judge not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const { title, description, triggerDescription, executeTree } =
+            req.body;
+        if (title !== undefined) judge.title = title;
+        if (description !== undefined) judge.description = description;
+        if (triggerDescription !== undefined)
+            judge.triggerDescription = triggerDescription;
+        if (executeTree !== undefined) judge.executeTree = executeTree;
+        judge.updatedAt = Date.now();
+
+        await judge.save();
+        return res.status(200).json({ message: "Judge updated successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deleteJudge = async (req, res) => {
+    try {
+        const { ruleId, judgeId } = req.params;
+        const judge = await GameJudge.findOne({ ruleId, judgeId });
+        if (!judge) return res.status(404).json({ message: "Judge not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        await GameJudge.deleteOne({ ruleId, judgeId });
+        return res.status(200).json({ message: "Judge deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const getClass = async (req, res) => {
+    try {
+        const { ruleId, classId } = req.params;
+        const classObj = await GameClass.findOne({ ruleId, classId });
+        if (!classObj) {
+            return res.status(404).json({ message: "Class not found" });
+        }
+        return res.status(200).json(classObj);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const createClass = async (req, res) => {
+    try {
+        const { ruleId } = req.params;
+        const { title, description, status } = req.body;
+
+        if (!title || !status) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule) return res.status(404).json({ message: "Rule not found" });
+        if (rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const newClass = new GameClass({
+            ruleId,
+            title,
+            description,
+            status,
+        });
+        await newClass.save();
+        return res.status(201).json({
+            message: "Class created successfully",
+            classId: newClass.classId,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const updateClass = async (req, res) => {
+    try {
+        const { ruleId, classId } = req.params;
+        const classObj = await GameClass.findOne({ ruleId, classId });
+        if (!classObj)
+            return res.status(404).json({ message: "Class not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const { title, description, status } = req.body;
+        if (title !== undefined) classObj.title = title;
+        if (description !== undefined) classObj.description = description;
+        if (status !== undefined) classObj.status = status;
+        classObj.updatedAt = Date.now();
+
+        await classObj.save();
+        return res.status(200).json({ message: "Class updated successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deleteClass = async (req, res) => {
+    try {
+        const { ruleId, classId } = req.params;
+        const classObj = await GameClass.findOne({ ruleId, classId });
+        if (!classObj)
+            return res.status(404).json({ message: "Class not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        await GameClass.deleteOne({ ruleId, classId });
+        return res.status(200).json({ message: "Class deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const getEnding = async (req, res) => {
+    try {
+        const { ruleId, endingId } = req.params;
+        const ending = await GameEnding.findOne({ ruleId, endingId });
+        if (!ending) {
+            return res.status(404).json({ message: "Ending not found" });
+        }
+        return res.status(200).json(ending);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const createEnding = async (req, res) => {
+    try {
+        const { ruleId } = req.params;
+        const { title, description, triggerTree, executeTree } = req.body;
+
+        if (!title || !triggerTree || !executeTree) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule) return res.status(404).json({ message: "Rule not found" });
+        if (rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const newEnding = new GameEnding({
+            ruleId,
+            title,
+            description,
+            triggerTree,
+            executeTree,
+        });
+        await newEnding.save();
+        return res.status(201).json({
+            message: "Ending created successfully",
+            endingId: newEnding.endingId,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const updateEnding = async (req, res) => {
+    try {
+        const { ruleId, endingId } = req.params;
+        const ending = await GameEnding.findOne({ ruleId, endingId });
+        if (!ending)
+            return res.status(404).json({ message: "Ending not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const { title, description, triggerTree, executeTree } = req.body;
+        if (title !== undefined) ending.title = title;
+        if (description !== undefined) ending.description = description;
+        if (triggerTree !== undefined) ending.triggerTree = triggerTree;
+        if (executeTree !== undefined) ending.executeTree = executeTree;
+        ending.updatedAt = Date.now();
+
+        await ending.save();
+        return res.status(200).json({ message: "Ending updated successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deleteEnding = async (req, res) => {
+    try {
+        const { ruleId, endingId } = req.params;
+        const ending = await GameEnding.findOne({ ruleId, endingId });
+        if (!ending)
+            return res.status(404).json({ message: "Ending not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        await GameEnding.deleteOne({ ruleId, endingId });
+        return res.status(200).json({ message: "Ending deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const getEntity = async (req, res) => {
+    try {
+        const { ruleId, entityId } = req.params;
+        const entity = await GameEntity.findOne({ ruleId, entityId });
+        if (!entity) {
+            return res.status(404).json({ message: "Entity not found" });
+        }
+        return res.status(200).json(entity);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const createEntity = async (req, res) => {
+    try {
+        const { ruleId } = req.params;
+        const { title, description, status, inventory, equipment, isNPC } =
+            req.body;
+
+        if (!title || !status) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule) return res.status(404).json({ message: "Rule not found" });
+        if (rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const newEntity = new GameEntity({
+            ruleId,
+            title,
+            description,
+            status,
+            inventory,
+            equipment,
+            isNPC,
+        });
+        await newEntity.save();
+        return res.status(201).json({
+            message: "Entity created successfully",
+            entityId: newEntity.entityId,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const updateEntity = async (req, res) => {
+    try {
+        const { ruleId, entityId } = req.params;
+        const entity = await GameEntity.findOne({ ruleId, entityId });
+        if (!entity)
+            return res.status(404).json({ message: "Entity not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        const { title, description, status, inventory, equipment, isNPC } =
+            req.body;
+        if (title !== undefined) entity.title = title;
+        if (description !== undefined) entity.description = description;
+        if (status !== undefined) entity.status = status;
+        if (inventory !== undefined) entity.inventory = inventory;
+        if (equipment !== undefined) entity.equipment = equipment;
+        if (isNPC !== undefined) entity.isNPC = isNPC;
+        entity.updatedAt = Date.now();
+
+        await entity.save();
+        return res.status(200).json({ message: "Entity updated successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deleteEntity = async (req, res) => {
+    try {
+        const { ruleId, entityId } = req.params;
+        const entity = await GameEntity.findOne({ ruleId, entityId });
+        if (!entity)
+            return res.status(404).json({ message: "Entity not found" });
+
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule || rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        await GameEntity.deleteOne({ ruleId, entityId });
+        return res.status(200).json({ message: "Entity deleted successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });

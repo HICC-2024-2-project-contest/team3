@@ -8,14 +8,18 @@ const gameRuleSchema = mongoose.Schema({
     description: { type: String, default: "" },
     authorId: { type: String, required: true },
 
-    eventList: { type: Array, default: [] }, // Array of eventUUID
-    judgeList: { type: Array, default: [] }, // Array of judgeUUID
-    classList: { type: Array, default: [] }, // Array of classUUID
-    endingList: { type: Array, default: [] }, // Array of endingUUID
+    eventList: { type: [String], default: [] }, // Array of eventUUID
+    judgeList: { type: [String], default: [] }, // Array of judgeUUID
+    classList: { type: [String], default: [] }, // Array of classUUID
+    endingList: { type: [String], default: [] }, // Array of endingUUID
+    entityList: { type: [String], default: [] }, // Array of entityUUID
 
     background: { type: String, default: "" },
+    globalVariables: { type: Map, default: {} },
+    customEntityConfig: { type: Map, default: {} },
+    customItemConfig: { type: Map, default: {} },
     exampleScenarios: { type: Array, default: [] },
-    additionalInfomation: { type: Map },
+    additionalInformation: { type: Map },
 
     isPublic: { type: Boolean, default: true },
     isPublished: { type: Boolean, default: false },
@@ -23,7 +27,7 @@ const gameRuleSchema = mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
-postSchema.set("timestamps", true);
+gameRuleSchema.set("timestamps", true);
 gameRuleSchema.pre("save", function (next) {
     if (!this.ruleId) {
         this.ruleId = uuidv4();
