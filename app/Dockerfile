@@ -4,4 +4,4 @@ COPY ./ ./
 
 RUN npm install
 
-CMD ["node", "app.js"]
+CMD ["node", "src/app.mjs"]
