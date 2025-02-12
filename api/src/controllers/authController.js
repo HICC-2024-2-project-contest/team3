@@ -64,7 +64,7 @@ export const verifyEmail = async (req, res) => {
             return res.status(409).json({ error: "Email already exists" });
         }
 
-        await redisClient.setEx(`isEmailVerified:${email}`, 300, 1);
+        await redisClient.setEx(`isEmailVerified:${email}`, 300, "1");
 
         return res.status(200).json({ message: "Email verified successfully" });
     } catch (error) {

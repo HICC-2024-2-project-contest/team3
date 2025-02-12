@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.post("/request-email-verification", requestEmailVerification);
-router.post("/verify-email/:token", verifyEmail);
+router.post("/verify-email", verifyEmail);
 
 export default router;
