@@ -1,37 +1,30 @@
-// routes/gameRoutes.js
 import express from "express";
 import {
-    // Rule 관련 컨트롤러 함수
     getRule,
     createRule,
     updateRule,
     deleteRule,
-    // Event 관련 컨트롤러 함수
     getEvent,
     createEvent,
     updateEvent,
     deleteEvent,
-    // Judge 관련 컨트롤러 함수
     getJudge,
     createJudge,
     updateJudge,
     deleteJudge,
-    // Class 관련 컨트롤러 함수
     getClass,
     createClass,
     updateClass,
     deleteClass,
-    // Ending 관련 컨트롤러 함수
     getEnding,
     createEnding,
     updateEnding,
     deleteEnding,
-    // Entity 관련 컨트롤러 함수
     getEntity,
     createEntity,
     updateEntity,
     deleteEntity,
-} from "../controllers/gameController.js"; // 실제 컨트롤러 파일 경로로 수정
+} from "../controllers/gameController.js";
 
 const router = express.Router();
 
