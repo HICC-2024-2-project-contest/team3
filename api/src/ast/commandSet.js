@@ -4,8 +4,8 @@ import { utilBlock } from "./utilBlock.js";
 
 async function executeCommandSet(commandSetNode, context) {
     for (const node of commandSetNode.commands) {
-        if (statement.block) {
-            const block = statement.block;
+        if (node.block) {
+            const block = node.block;
             switch (block.type) {
                 case "LogicBlock":
                     if (
