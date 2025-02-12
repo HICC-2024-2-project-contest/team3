@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  api:
+    build: ./api
+    container_name: api-server
+    ports:
+      - '1337:1337'
+    volumes:
+      - ./api:/usr/src/app
+    depends_on:
+      - trpg-mysql
+      - mongodb
+      - redis
+
+  trpg-mysql:
+    image: mysql:latest
+    container_name: trpg-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PW}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server --requirepass ${REDIS_PW}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PW}
+    ports:
+      - '6379:6379'
+
+volumes:
+  mysql_data:
+  mongodb_data:
