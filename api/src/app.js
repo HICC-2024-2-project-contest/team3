@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
     res.send("TRPG BACKEND SAMPLE");
 });
 
+app.all("*", (req, res) => {
+    res.status(404).json({"message": "Not found"})
+})
+
 app.listen(1337, () => {
     console.log("Server is running on port 5000");
 });

@@ -1,3 +1,5 @@
+import { APIGetRequest, APIDeleteRequest } from '/modules/request.mjs';
+
 function openNavCover() {
   document.querySelector('#nav-cover').setAttribute('status', 'open');
 }
@@ -48,21 +50,37 @@ document.querySelector('#nav-cover').addEventListener('click', (event) => {
   closeNavAccount();
   closeNavCover();
 });
+document
+  .querySelector('#nav-button-logout')
+  .addEventListener('click', async (event) => {
+    delete localStorage.userId;
+    delete localStorage.accessToken;
+    delete localStorage.refreshToken;
+    delete localStorage.profileImage;
 
-async function init() {
-  if (true) {
+    window.location.href = '/';
+  });
+
+(async () => {
+  if (localStorage.userId) {
+    const res = await APIGetRequest(`user/${localStorage.userId}`);
     document.querySelector('#nav .right .login').style.display = 'none';
 
-    document.querySelector('#nav-profile-image').src;
-    document.querySelector('#nav-account-profile-image').src;
+    document.querySelector('#nav-profile-image').src =
+      localStorage.profileImage;
+    document.querySelector('#nav-account-profile-image').src =
+      localStorage.profileImage;
     document.querySelector('#nav-account-profile-main').innerHTML =
-      'ㅁㅈㄹㅈㅁㄹㅁㅈ';
-    document.querySelector('#nav-account-profile-sub').innerHTML = 'ㅁㄴㅇㄴㅁ';
-    document.querySelector('#nav-button-my-profile').href;
-    document.querySelector('#nav-button-my-games').href;
+      res.user.username;
+    document.querySelector('#nav-account-profile-sub').innerHTML =
+      res.user.email;
+    document.querySelector(
+      '#nav-button-my-profile'
+    ).href = `/p/${localStorage.userId}`;
+    document.querySelector(
+      '#nav-button-my-games'
+    ).href = `/p/${localStorage.userId}/games`;
   } else {
     document.querySelector('#nav .right .account').style.display = 'none';
   }
-}
-
-init();
+})();

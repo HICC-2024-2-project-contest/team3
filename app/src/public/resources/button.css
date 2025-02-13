@@ -2,6 +2,9 @@
   --button-bg: rgb(240, 240, 240);
   --button-fg: rgb(80, 80, 80);
   --button-ol: rgb(210, 210, 210);
+  --button-selected-bg: rgb(230, 230, 230);
+  --button-selected-fg: black;
+  --button-selected-ol: rgb(80, 80, 80);
   --button-hover-bg: rgb(230, 230, 230);
   --button-hover-fg: black;
   --button-hover-ol: rgb(80, 80, 80);
@@ -32,6 +35,12 @@ button,
   border: solid 1px var(--button-ol);
   transition: background ease-out 0.1s, border-color ease-out 0.1s;
 }
+button[selected],
+[type='button'][selected] {
+  background: var(--button-selected-bg);
+  color: var(--button-selected-fg);
+  border-color: var(--button-selected-ol);
+}
 button:hover,
 [type='button']:hover {
   background: var(--button-hover-bg);
@@ -52,6 +61,14 @@ button:focus-visible,
 [type='button']:focus-visible {
   outline: solid 0.25rem var(--th);
   outline-offset: 0.25rem;
+}
+
+button > .material-symbols-outlined,
+[type='button'] > .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 17;
+  font-size: 16pt;
+  margin-right: 0.25rem;
+  margin-left: -0.5rem;
 }
 
 /* 다른 스타일의 버튼 */
@@ -88,9 +105,12 @@ button[second],
   --button-bg: transparent;
   --button-fg: rgb(80, 80, 80);
   --button-ol: transparent;
-  --button-hover-bg: rgb(240, 240, 240);
+  --button-selected-bg: rgb(240, 240, 240);
+  --button-selected-fg: black;
+  --button-selected-ol: rgb(240, 240, 240);
+  --button-hover-bg: rgb(230, 230, 230);
   --button-hover-fg: black;
-  --button-hover-ol: rgb(240, 240, 240);
+  --button-hover-ol: rgb(230, 230, 230);
 }
 
 /* 저장하기 */

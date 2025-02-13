@@ -1,0 +1,33 @@
+<script src="account.mjs" type="module"></script>
+
+<div class="title">
+  <h2>계정 정보</h2>
+</div>
+<hr />
+<div id="settings-account">
+  <label>프로필 이미지</label>
+  <div class="image">
+    <img id="settings-profile-image" />
+    <a href="https://gravatar.com" target="_blank" type="button"
+      ><span class="material-symbols-outlined"> edit_square </span>그라바타에서
+      변경하기</a
+    >
+  </div>
+  <div class="name">
+    <tp-input-string id="input-username" label="닉네임"></tp-input-string>
+  </div>
+  <div class="bio">
+    <tp-input-string id="input-bio" label="소개"></tp-input-string>
+  </div>
+  <div class="email">
+    <tp-input-string
+      id="input-email"
+      label="이메일"
+      message="계정의 이메일은 변경할 수 없습니다."
+      readonly
+    ></tp-input-string>
+  </div>
+  <div class="button">
+    <button id="button-save" disabled color="green">변경사항 저장</button>
+  </div>
+</div>

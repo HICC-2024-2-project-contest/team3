@@ -8,17 +8,28 @@ body {
 
 main {
   width: 22rem;
-  padding-bottom: 5rem;
+  padding-bottom: 3rem;
 }
 main > * {
   width: 100%;
 }
 main > .title {
-  margin-bottom: 3rem;
+  margin-bottom: 2.75rem;
   text-align: center;
-  font-size: 2rem;
-  font-weight: 400;
+  font-size: 18pt;
+  font-weight: 700;
+  line-height: 2.25rem;
 }
 main > button {
-  margin-top: 3rem;
+  margin-top: 1rem;
+}
+main .links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  height: 3rem;
+  padding-top: 2rem;
+}
+main .links > * {
+  font-size: 0.85rem;
 }
