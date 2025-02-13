@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const gameEndingSchema = mongoose.Schema({
     endingId: { type: String, required: true, unique: true },
-    ruleId: { type: String, required: true },
+    ruleId: { type: String, required: true, ref: "GameRule" },
 
     title: { type: String, required: true },
     description: { type: String, default: "" },
@@ -15,7 +15,7 @@ const gameEndingSchema = mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
-postSchema.set("timestamps", true);
+gameEndingSchema.set("timestamps", true);
 gameEndingSchema.pre("save", function (next) {
     if (!this.endingId) {
         this.endingId = uuidv4();
