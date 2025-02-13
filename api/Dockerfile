@@ -11,4 +11,4 @@ RUN npm install
 COPY . /app/
 EXPOSE 1337
 
-CMD ["./executeDBinit.sh", "trpg-mysql:3306", "--", "npm", "start"]
+CMD ["bash", "./executeDBinit.sh", "trpg-mysql:3306", "--", "npm", "start"]

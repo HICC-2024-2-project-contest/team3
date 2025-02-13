@@ -1,7 +1,10 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken'
 
 export const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
+
+    console.log(req.headers);
+
     if (!authHeader)
         return res.status(401).json({ error: "Authorization header missing" });
     if (!authHeader.startsWith("Bearer ")) {
@@ -22,6 +25,7 @@ export const authenticate = (req, res, next) => {
         if (err.name === "TokenExpiredError") {
             return res.status(401).json({ error: "Token expired" });
         }
+        console.log(err);
         return res.status(401).json({ error: "Invalid token" });
     }
 };

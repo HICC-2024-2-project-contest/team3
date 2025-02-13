@@ -1,4 +1,4 @@
-const baseUri = 'http://localhost:1337';
+const baseUri = 'https://atp.ccc.vg';
 
 async function request(method = 'GET', path = '', contentType, data = {}) {
   const url = baseUri + '/api/v1/' + path;
@@ -34,13 +34,14 @@ async function request(method = 'GET', path = '', contentType, data = {}) {
     } catch (error) {
       return null;
     }
-  } else if (res.status === 403) {
+  } else if (res.status === 401) {
     return new Promise(async (resolve, reject) => {
       try {
         const json = await res.json();
+        console.log(json);
         if (
           options.headers.Authorization &&
-          json.messages[0].message === 'Token is invalid or expired'
+          (json.error === 'Token expired' || json.error === 'Invalid token')
         ) {
           refreshToken()
             .then(() => {
@@ -49,9 +50,6 @@ async function request(method = 'GET', path = '', contentType, data = {}) {
             .catch(() => {
               delete localStorage.accessToken;
               delete localStorage.refreshToken;
-              delete localStorage.booth;
-              window.setCookie('booth', '', -10000);
-
               window.location.href = '/';
             });
         } else {
@@ -121,7 +119,7 @@ function errorFrame(res, html) {
 
 async function refreshToken() {
   return new Promise((resolve, reject) => {
-    fetch(baseUri + '/api/auth/refresh/', {
+    fetch(baseUri + '/api/v1/user/refresh/', {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -132,16 +130,16 @@ async function refreshToken() {
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
       body: JSON.stringify({
-        refresh: localStorage.refreshToken,
+        refreshToken: localStorage.refreshToken,
       }),
     })
       .then(async (res) => {
         if (res.status === 200) {
           const data = await res.json();
-          localStorage.accessToken = data.token.access;
+          localStorage.accessToken = data.accessToken;
           resolve();
         } else {
-          reject();
+          reject(res);
         }
       })
       .catch(reject);
@@ -156,6 +154,10 @@ async function APIPostRequest(path, data) {
   return request('POST', path, 'application/json', data);
 }
 
+async function APIPutRequest(path, data) {
+  return request('PUT', path, 'application/json', data);
+}
+
 async function APIPatchRequest(path, data) {
   return request('PATCH', path, 'application/json', data);
 }
@@ -164,6 +166,12 @@ async function APIDeleteRequest(path, data) {
   return request('DELETE', path, 'application/json', data);
 }
 
-export { APIGetRequest, APIPostRequest, APIPatchRequest, APIDeleteRequest };
+export {
+  APIGetRequest,
+  APIPostRequest,
+  APIPutRequest,
+  APIPatchRequest,
+  APIDeleteRequest,
+};
 
 export default request;
