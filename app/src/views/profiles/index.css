@@ -30,9 +30,15 @@
   justify-content: flex-end;
   margin-top: 1rem;
 }
-
+#profiles-index-followers {
+  text-align: center;
+  color: rgb(120, 120, 120);
+  line-height: 2rem;
+  padding-bottom: 1rem;
+}
 #profiles-index-name {
   text-align: center;
+  padding-top: 1rem;
 }
 #profiles-index-image {
   display: block;
@@ -41,6 +47,16 @@
   border-radius: 100rem;
   overflow: hidden;
   border: solid 1px rgb(210, 210, 210);
+}
+#profiles .title .buttons {
+  display: flex;
+  justify-content: space-between;
+}
+#profiles .title .buttons > button[icon] {
+  width: 2.5rem;
+}
+#profiles .title .buttons > button:first-child {
+  width: 10rem;
 }
 
 #profiles-account .image {
