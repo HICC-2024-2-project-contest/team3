@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import { uploadProfileImage, deleteProfileImage } from "../utils/image.js";
 import { mysqlConfig, redisConfig } from "../config/database.js";
+import { escape } from "html-escaper";
 
 const mysqlPool = mysql.createPool(mysqlConfig);
 
@@ -36,9 +37,6 @@ export const register = async (req, res) => {
             return res.status(409).json({ error: "Email already exists" });
         }
         const emailVerified = await redisClient.get(`isEmailVerified:${email}`);
-        console.log(email);
-        console.log(password);
-        console.log(emailVerified);
         if (!emailVerified) {
             return res
                 .status(401)
@@ -50,7 +48,13 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         await mysqlPool.query(
             "INSERT INTO USER (userId, email, password, username, description) VALUES (?, ?, ?, ?, ?)",
-            [userId, email, hashedPassword, username, description]
+            [
+                userId,
+                escape(email),
+                hashedPassword,
+                escape(username),
+                escape(description),
+            ]
         );
 
         return res.status(201).json({ message: "User created successfully" });
@@ -93,7 +97,7 @@ export const login = async (req, res) => {
             }
         );
 
-        return res.status(200).json({ accessToken, refreshToken });
+        return res.status(200).json({ accessToken, refreshToken, userId });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
@@ -215,7 +219,7 @@ export const putUser = async (req, res) => {
     try {
         await mysqlPool.query(
             "UPDATE USER SET username = ?, description = ? WHERE userId = ?",
-            [username, description, userId]
+            [escape(username), escape(description), userId]
         );
         return res
             .status(200)
@@ -345,7 +349,7 @@ export const report = async (req, res) => {
         }
         await mysqlPool.query(
             "INSERT INTO REPORT (userId, targetUserId, reason) VALUES (?, ?, ?)",
-            [userId, targetUserId, reason]
+            [userId, targetUserId, escape(reason)]
         );
         return res.status(200).json({ message: "Reported successfully" });
     } catch (error) {

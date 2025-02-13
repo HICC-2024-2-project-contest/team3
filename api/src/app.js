@@ -13,7 +13,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 
 app.get("/", (req, res) => {
