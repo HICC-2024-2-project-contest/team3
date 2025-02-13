@@ -35,23 +35,13 @@ router.get('/reset-password', (req, res) => {
   });
 });
 
-router.get('/settings', (req, res) => {
-  res.redirect('/settings/account');
-});
-
-router.get('/settings/account', (req, res) => {
-  res.render('index', {
-    title: '계정 정보 - 설정',
-    page: 'auth/settings/index',
-    parts: ['nav', 'footer'],
-    setting: 'account',
-  });
-});
-
 import gamesRouter from './games.mjs';
 router.use('/g', gamesRouter);
 
 import profilesRouter from './profiles.mjs';
 router.use('/profiles', profilesRouter);
+
+import settingsRouter from './settings.mjs';
+router.use('/settings', settingsRouter);
 
 export default router;

@@ -78,8 +78,11 @@ document
       '#nav-button-my-profile'
     ).href = `/profiles/${localStorage.userId}`;
     document.querySelector(
-      '#nav-button-my-games'
-    ).href = `/profiles/${localStorage.userId}/games`;
+      '#nav-button-my-history'
+    ).href = `/profiles/${localStorage.userId}/history`;
+    document.querySelector(
+      '#nav-button-my-workshop'
+    ).href = `/profiles/${localStorage.userId}/workshop`;
   } else {
     document.querySelector('#nav .right .account').style.display = 'none';
   }

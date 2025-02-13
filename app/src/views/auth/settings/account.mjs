@@ -62,3 +62,7 @@ button.save.addEventListener('click', async () => {
     window.location.reload();
   }, 1000);
 });
+
+document
+  .querySelector('#settings-button-account')
+  .setAttribute('selected', true);

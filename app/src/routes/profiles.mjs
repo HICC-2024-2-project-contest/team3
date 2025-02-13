@@ -15,7 +15,7 @@ router.get('/:pid', (req, res) => {
   });
 });
 
-router.get('/:pid/play-history', (req, res) => {
+router.get('/:pid/history', (req, res) => {
   res.render('index', {
     title: '프로필',
     page: 'profiles/index',

@@ -6,6 +6,9 @@ async function init() {
   });
 
   const user = data.user;
+
+  document.querySelector('#profiles-profile-data').innerHTML =
+    JSON.stringify(user);
 }
 
 init();

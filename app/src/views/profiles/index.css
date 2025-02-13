@@ -52,6 +52,16 @@
   display: flex;
   justify-content: space-between;
 }
+#profiles .title .buttons > a {
+  display: none;
+}
+#profiles .title .buttons[myprofile] > a {
+  display: inline-flex;
+  width: 100%;
+}
+#profiles .title .buttons[myprofile] > button {
+  display: none;
+}
 #profiles .title .buttons > button[icon] {
   width: 2.5rem;
 }
