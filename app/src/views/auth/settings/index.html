@@ -1,0 +1,46 @@
+<link href="index.css" rel="stylesheet" />
+
+<section id="settings">
+  <div class="outwrapper">
+    <div class="inwrapper">
+      <div class="side">
+        <div class="title">
+          <h2>설정</h2>
+        </div>
+        <hr />
+        <a
+          href="/settings/account"
+          type="button"
+          second
+          id="settings-button-account"
+          ><span class="material-symbols-outlined"> person </span>계정 정보</a
+        >
+        <a
+          href="/settings/change-password"
+          type="button"
+          second
+          id="settings-button-change-password"
+          ><span class="material-symbols-outlined"> lock </span>비밀번호 변경</a
+        >
+        <hr />
+        <a
+          href="/settings/block-history"
+          type="button"
+          second
+          id="settings-button-block-history"
+          ><span class="material-symbols-outlined"> block </span> 차단 내역</a
+        >
+        <a
+          href="/settings/report-history"
+          type="button"
+          second
+          id="settings-button-report-history"
+          ><span class="material-symbols-outlined"> report </span>신고 내역</a
+        >
+      </div>
+      <div class="main">
+        <import src="#{setting}"></import>
+      </div>
+    </div>
+  </div>
+</section>

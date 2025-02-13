@@ -52,7 +52,7 @@ export default customElements.define(
         :host > label {
           line-height: 1.25rem;
           font-size: 0.8rem;
-          font-weight: 500;
+          font-weight: 600;
           color: rgb(80, 80, 80);
         }
         :host > .message {
@@ -72,9 +72,12 @@ export default customElements.define(
       input.type = this.getAttribute('type') || 'text';
       input.value = this.getAttribute('value') || '';
       input.placeholder = this.getAttribute('placeholder') || '';
+      input.tabIndex = this.getAttribute('tabindex') || '';
+      this.removeAttribute('tabindex');
       input.disabled = this.hasAttribute('disabled');
       input.readOnly = this.hasAttribute('readOnly');
       input.spellcheck = false;
+      this.input = input;
 
       const label = document.createElement('label');
       label.innerHTML = this.getAttribute('label');
@@ -101,6 +104,7 @@ export default customElements.define(
       'label',
       'message',
       'placeholder',
+      'tabindex',
       'disabled',
       'readonly',
     ];
@@ -115,9 +119,9 @@ export default customElements.define(
       } else {
         this.removeAttribute('type');
       }
-      this.shadowRoot
-        ? (this.shadowRoot.querySelector('input').type = newValue || '')
-        : null;
+      if (this.shadowRoot) {
+        this.input.type = newValue || '';
+      }
     }
 
     get value() {
@@ -130,9 +134,9 @@ export default customElements.define(
       } else {
         this.removeAttribute('value');
       }
-      this.shadowRoot
-        ? (this.shadowRoot.querySelector('input').value = newValue || '')
-        : null;
+      if (this.shadowRoot) {
+        this.input.value = newValue || '';
+      }
     }
 
     get placeholder() {
@@ -145,9 +149,16 @@ export default customElements.define(
       } else {
         this.removeAttribute('placeholder');
       }
-      this.shadowRoot
-        ? (this.shadowRoot.querySelector('input').placeholder = newValue || '')
-        : null;
+      if (this.shadowRoot) {
+        this.input.placeholder = newValue || '';
+      }
+    }
+
+    set tabindex(newValue) {
+      this.removeAttribute('tabindex');
+      if (this.shadowRoot) {
+        this.input.tabIndex = newValue || '';
+      }
     }
 
     get disabled() {
@@ -160,8 +171,9 @@ export default customElements.define(
       } else {
         this.setAttribute('disabled', '');
       }
-      this.shadowRoot.querySelector('input').disabled =
-        this.hasAttribute('disabled');
+      if (this.shadowRoot) {
+        this.input.disabled = this.hasAttribute('disabled');
+      }
     }
 
     get readonly() {
@@ -174,8 +186,9 @@ export default customElements.define(
       } else {
         this.setAttribute('readonly', '');
       }
-      this.shadowRoot.querySelector('input').readOnly =
-        this.hasAttribute('readonly');
+      if (this.shadowRoot) {
+        this.input.readOnly = this.hasAttribute('readonly');
+      }
     }
 
     get label() {
@@ -188,9 +201,9 @@ export default customElements.define(
       } else {
         this.removeAttribute('label');
       }
-      this.shadowRoot
-        ? (this.shadowRoot.querySelector('label').innerHTML = newValue || '')
-        : null;
+      if (this.shadowRoot) {
+        this.shadowRoot.querySelector('label').innerHTML = newValue || '';
+      }
     }
 
     get message() {
@@ -203,7 +216,9 @@ export default customElements.define(
       } else {
         this.removeAttribute('message');
       }
-      this.shadowRoot.querySelector('.message').innerHTML = newValue || '';
+      if (this.shadowRoot) {
+        this.shadowRoot.querySelector('.message').innerHTML = newValue || '';
+      }
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
