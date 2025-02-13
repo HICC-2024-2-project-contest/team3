@@ -1,6 +1,6 @@
 import { evaluateExpression } from "./evaluator.js";
 import { executeCommandSet } from "./commandSet.js";
-import { LLMCall } from "../utils/LLMCall.js";
+import { LLMCall } from "../utils/masterAgent/LLMCall.js";
 
 async function utilBlock(node, context) {
     const command = node.command;

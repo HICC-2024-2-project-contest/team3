@@ -1,7 +1,7 @@
 import {} from "@google/generative-ai";
 
-async function LLMCall() {
-    return "LLMCall";
+async function LLMCall(prompt) {
+    return prompt;
 }
 
 export { LLMCall };
