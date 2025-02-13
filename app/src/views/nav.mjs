@@ -76,10 +76,10 @@ document
       res.user.email;
     document.querySelector(
       '#nav-button-my-profile'
-    ).href = `/p/${localStorage.userId}`;
+    ).href = `/profiles/${localStorage.userId}`;
     document.querySelector(
       '#nav-button-my-games'
-    ).href = `/p/${localStorage.userId}/games`;
+    ).href = `/profiles/${localStorage.userId}/games`;
   } else {
     document.querySelector('#nav .right .account').style.display = 'none';
   }

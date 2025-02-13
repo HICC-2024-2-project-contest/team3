@@ -1,31 +1,44 @@
 <link href="index.css" rel="stylesheet" />
+<script>
+  window.pid = '#{pid}';
+</script>
 <script src="index.mjs" type="module"></script>
 
-<section id="profile">
+<section id="profiles">
   <div class="outwrapper">
     <div class="inwrapper">
-      <div class="image">
-        <img src="/resources/IMG_0768.jpg" />
-      </div>
-      <div class="info">
-        <div class="main">
-          <div class="bg"></div>
-          <div class="fg" id="profile-label-main">샌즈마스터 김샌즈</div>
+      <div class="side">
+        <div class="title">
+          <img id="profiles-index-image" />
+          <h2 id="profiles-index-name">&nbsp;</h2>
         </div>
-        <div class="sub" id="profile-label-sub"></div>
+        <hr />
+        <a
+          href="/profiles/#{pid}"
+          type="button"
+          second
+          id="profiles-button-profile"
+          ><span class="material-symbols-outlined"> person </span>프로필</a
+        >
+        <a
+          href="/profiles/#{pid}/history"
+          type="button"
+          second
+          id="profiles-button-history"
+          ><span class="material-symbols-outlined"> history </span>플레이
+          기록</a
+        >
+        <a
+          href="/profiles/#{pid}/workshop"
+          type="button"
+          second
+          id="profiles-button-workshop"
+          ><span class="material-symbols-outlined"> category </span>창작 마당</a
+        >
+      </div>
+      <div class="main">
+        <import src="#{tab}"></import>
       </div>
     </div>
   </div>
 </section>
-
-<section id="profile-menu">
-  <div class="outwrapper">
-    <div class="inwrapper" tab="#{tab}">
-      <a class="tab" href="/p/#{pid}">사용자 정보</a>
-      <a class="tab" href="/p/#{pid}/play-history">플레이 기록</a>
-      <a class="tab" href="/p/#{pid}/workshop">창작 마당</a>
-    </div>
-  </div>
-</section>
-
-<import src="/profiles/#{tab}"></import>

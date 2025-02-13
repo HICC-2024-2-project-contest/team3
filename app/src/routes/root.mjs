@@ -52,6 +52,6 @@ import gamesRouter from './games.mjs';
 router.use('/g', gamesRouter);
 
 import profilesRouter from './profiles.mjs';
-router.use('/p', profilesRouter);
+router.use('/profiles', profilesRouter);
 
 export default router;
