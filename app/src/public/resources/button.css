@@ -71,6 +71,17 @@ button > .material-symbols-outlined,
   margin-left: -0.5rem;
 }
 
+button[icon],
+[type='button'][icon] {
+  padding: 0 0.35rem;
+}
+button[icon] > .material-symbols-outlined,
+[type='button'][icon] > .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 17;
+  font-size: 16pt;
+  margin: 0;
+}
+
 /* 다른 스타일의 버튼 */
 
 button[small],
