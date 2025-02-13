@@ -1,13 +1,7 @@
 import mongoose from "mongoose";
 import GameRule from "../model/gameRuleModel.js";
 import Game from "../model/gameModel.js";
-import database from "../config/database.js";
-
-/* 
-globalVariables: { type: Map, default: {} },
-customEntityConfig: { type: Map, default: {} },
-customItemConfig: { type: Map, default: {} },
-*/
+import { mongoConfig } from "../config/database.js";
 
 mongoose
     .connect(mongoConfig.uri, mongoConfig.options)

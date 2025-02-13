@@ -11,7 +11,7 @@ async function sendMail({ toEmail, subject, htmlContent }) {
         throw new Error("Recipient email is required.");
     }
 
-    const emailDomain = toEmail.split("@")[1];
+    const emailDomain = process.env.EMAIL_USER.split("@")[1];
     const smtpConfig = smtpSettings[emailDomain];
 
     if (!smtpConfig) {

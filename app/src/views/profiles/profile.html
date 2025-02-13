@@ -1,0 +1,19 @@
+<script src="profile.mjs" type="module"></script>
+
+<div class="title">
+  <h2>프로필</h2>
+</div>
+
+<hr />
+
+<section id="profiles-profile">
+  <p id="profiles-profile-data"></p>
+  <p>ip: #{client.ip}</p>
+  <p>country: #{client.geoip.country.name}</p>
+  <p>region: #{client.geoip.region}</p>
+  <p>city: #{client.geoip.city}</p>
+  <p>as: #{client.geoip.as.number} #{client.geoip.as.name}</p>
+  <p>browser: #{client.agent.browser}</p>
+  <p>system: #{client.agent.system}</p>
+  <p>string: #{client.agent.string}</p>
+</section>

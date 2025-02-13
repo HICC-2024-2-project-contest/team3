@@ -171,8 +171,8 @@ export const getFollowers = async (req, res) => {
     const { userId } = req.params;
     try {
         const [results] = await mysqlPool.query(
-            "SELECT * FROM FOLLOW WHERE userId = ?",
-            [userId]
+            "SELECT * FROM FOLLOW WHERE followingId = ? UNION SELECT * FROM FOLLOW WHERE followerId = ?",
+            [userId, userId]
         );
         return res.status(200).json({ followers: results });
     } catch (error) {

@@ -1,0 +1,12 @@
+.DS_Store
+*.DS_Store
+**/.DS_Store
+.vscode/
+
+node_modules/
+**/node_modules
+
+.env
+**/.env
+
+/app/config
