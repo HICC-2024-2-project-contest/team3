@@ -1,6 +1,17 @@
 <link href="login.css" rel="stylesheet" />
+<script src="login.mjs" type="module"></script>
 
 <h1 class="title">로그인</h1>
-<tp-input-string label="아이디 혹은 이메일"></tp-input-string>
-<tp-input-string label="비밀번호" type="password"></tp-input-string>
-<button>로그인</button>
+<tp-input-string id="input-email" label="이메일" tabindex="1"></tp-input-string>
+<tp-input-string
+  id="input-password"
+  label="비밀번호"
+  type="password"
+  tabindex="2"
+></tp-input-string>
+<button id="button-login" tabindex="3">로그인</button>
+<div class="links">
+  <a href="/register">회원가입</a>
+  <span>|</span>
+  <a href="/reset-password">비밀번호 재설정</a>
+</div>

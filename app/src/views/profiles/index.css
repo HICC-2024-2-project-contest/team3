@@ -18,8 +18,26 @@
   object-fit: cover;
 }
 #profile .info > .main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
   font-size: 2rem;
   height: 3rem;
+  padding: 1rem 2rem;
+  position: relative;
+}
+#profile .info > .main > .bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  border-radius: 100% 100%;
+  transform: rotate(-15deg);
+}
+#profile .info > .main > .fg {
+  position: relative;
+  color: white;
 }
 #profile .info > .sub {
   font-size: 1rem;

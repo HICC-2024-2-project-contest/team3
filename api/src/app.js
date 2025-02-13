@@ -13,12 +13,16 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 
 app.get("/", (req, res) => {
     res.send("TRPG BACKEND SAMPLE");
 });
+
+app.all("*", (req, res) => {
+    res.status(404).json({"message": "Not found"})
+})
 
 app.listen(1337, () => {
     console.log("Server is running on port 5000");

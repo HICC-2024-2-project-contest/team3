@@ -59,3 +59,12 @@ Date.prototype.toJSONLocal = (function () {
     );
   };
 })();
+
+window.hash = async (algo = 'SHA-512', message) => {
+  return Array.from(
+    new Uint8Array(
+      await crypto.subtle.digest(algo, new TextEncoder().encode(message))
+    ),
+    (byte) => byte.toString(16).padStart(2, '0')
+  ).join('');
+};

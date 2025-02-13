@@ -11,8 +11,42 @@ router.get('/', (req, res) => {
   });
 });
 
-import authRouter from './auth.mjs';
-router.use('/a', authRouter);
+router.get('/login', (req, res) => {
+  res.render('index', {
+    title: '로그인',
+    page: 'auth/login',
+    parts: [],
+  });
+});
+
+router.get('/register', (req, res) => {
+  res.render('index', {
+    title: '회원가입',
+    page: 'auth/register',
+    parts: [],
+  });
+});
+
+router.get('/reset-password', (req, res) => {
+  res.render('auth/reset-password', {
+    title: '비밀번호 재설정',
+    page: 'reset-password',
+    parts: [],
+  });
+});
+
+router.get('/settings', (req, res) => {
+  res.redirect('/settings/account');
+});
+
+router.get('/settings/account', (req, res) => {
+  res.render('index', {
+    title: '계정 정보 - 설정',
+    page: 'auth/settings/index',
+    parts: ['nav', 'footer'],
+    setting: 'account',
+  });
+});
 
 import gamesRouter from './games.mjs';
 router.use('/g', gamesRouter);

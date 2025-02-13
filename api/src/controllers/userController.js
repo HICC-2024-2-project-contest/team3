@@ -93,7 +93,7 @@ export const login = async (req, res) => {
             }
         );
 
-        return res.status(200).json({ accessToken, refreshToken });
+        return res.status(200).json({ accessToken, refreshToken, userId });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
