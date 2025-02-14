@@ -8,8 +8,8 @@ router.get('/:pid', (req, res) => {
   res.render('index', {
     title: '프로필',
     page: 'profiles/index',
-    tab: 'root',
     parts: ['nav', 'footer'],
+    tab: 'profile',
     pid: req.params.pid,
     client: req.client,
   });
@@ -19,8 +19,8 @@ router.get('/:pid/play-history', (req, res) => {
   res.render('index', {
     title: '프로필',
     page: 'profiles/index',
-    tab: 'history',
     parts: ['nav', 'footer'],
+    tab: 'history',
     pid: req.params.pid,
   });
 });
@@ -29,8 +29,8 @@ router.get('/:pid/workshop', (req, res) => {
   res.render('index', {
     title: '프로필',
     page: 'profiles/index',
-    tab: 'workshop',
     parts: ['nav', 'footer'],
+    tab: 'workshop',
     pid: req.params.pid,
   });
 });
