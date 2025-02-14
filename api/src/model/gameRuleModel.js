@@ -6,6 +6,8 @@ const gameRuleSchema = mongoose.Schema({
 
     title: { type: String, required: true },
     description: { type: String, default: "" },
+    views: { type: Number, default: 0 },
+    likes: { type: [String], default: [] },
     authorId: { type: String, required: true },
 
     eventList: { type: [String], default: [] }, // Array of eventUUID

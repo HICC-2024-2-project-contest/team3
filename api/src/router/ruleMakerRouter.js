@@ -1,6 +1,8 @@
 import express from "express";
 import { authenticate } from "../utils/authenticater.js";
 import {
+    likeRule,
+    likeRuleCancel,
     getRule,
     createRule,
     updateRule,
@@ -28,6 +30,9 @@ import {
 } from "../controllers/gameController.js";
 
 const router = express.Router();
+
+router.post("/:ruleId/like", authenticate, likeRule);
+router.delete("/:ruleId/like", authenticate, likeRuleCancel);
 
 router.get("/:ruleId", getRule);
 router.post("", authenticate, createRule);

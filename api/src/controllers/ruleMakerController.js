@@ -4,6 +4,7 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import redis from "redis";
+import mysql from "mysql2/promise";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 
@@ -37,8 +38,61 @@ export const getRule = async (req, res) => {
         if (!rule) {
             return res.status(404).json({ message: "Rule not found" });
         }
+        if (rule.isPublic === false && rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        if (rule.isPublished === false && rule.authorId !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        rule.views += 1;
+        await rule.save();
 
         return res.status(200).json(rule);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const likeRule = async (req, res) => {
+    try {
+        const { ruleId } = req.params;
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule) {
+            return res.status(404).json({ message: "Rule not found" });
+        }
+        if (rule.authorId === req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        if (rule.likes.includes(req.user.userId)) {
+            return res.status(400).json({ error: "Already liked" });
+        }
+        rule.likes.push(req.user.userId);
+        await rule.save();
+        return res.status(200).json({ message: "Rule liked" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const likeRuleCancel = async (req, res) => {
+    try {
+        const { ruleId } = req.params;
+        const rule = await GameRule.findOne({ ruleId });
+        if (!rule) {
+            return res.status(404).json({ message: "Rule not found" });
+        }
+        if (rule.authorId === req.user.userId) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        if (!rule.likes.includes(req.user.userId)) {
+            return res.status(400).json({ error: "Not liked" });
+        }
+        rule.likes = rule.likes.filter((id) => id !== req.user.userId);
+        await rule.save();
+        return res.status(200).json({ message: "Rule like canceled" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
