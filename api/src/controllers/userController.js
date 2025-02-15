@@ -185,6 +185,22 @@ export const getFollowers = async (req, res) => {
    Protected Endpoints
 --------------------------------------------------------------------------- */
 
+export const getAllReport = async (req, res) => {
+    const userId = req.user.userId;
+    if (userId === "1") {
+        try {
+            const [results] = await mysqlPool.query("SELECT * FROM REPORT");
+            return res.status(200).json({ reports: results });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+    else {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+}
+
 export const getReports = async (req, res) => {
     const userId = req.user.userId;
     try {

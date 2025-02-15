@@ -10,6 +10,7 @@ import {
   uploadProfileImageEndpoint,
   deleteProfileImageEndpoint,
   getFollowers,
+  getAllReport,
   getReports,
   getBlocks,
   follow,
@@ -52,5 +53,7 @@ router.post('/:userId/report', authenticate, report);
 router.get('/:userId/blocks', authenticate, getBlocks);
 router.post('/:userId/block', authenticate, block);
 router.post('/:userId/unblock', authenticate, unblock);
+
+router.get('/reports', authenticate, getAllReport);
 
 export default router;
