@@ -20,7 +20,7 @@ let user = {};
   ).src = `https://www.gravatar.com/avatar/${await hash(
     'SHA-256',
     user.email
-  )}?s=120&d=identicon`;
+  )}?s=600&d=identicon`;
 
   const followers = (
     await APIGetRequest(`user/${localStorage.userId}/followers`).catch((e) => {
