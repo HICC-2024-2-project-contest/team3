@@ -25,9 +25,9 @@ async function getImportance() {
 }
 
 async function masterAgent(gameId, prompt) {
-    const memorySearch = 1;
-    const prompt = "" + memorySearch;
-    const response = await LLMCall(prompt);
+    const memorySearch = memorySearch(prompt);
+    const promptFinal = "" + memorySearch;
+    const response = await LLMCall(promptFinal);
     const memorySegment = {
         time: new Date(),
         content: response,
